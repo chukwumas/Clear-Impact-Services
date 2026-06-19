@@ -29,7 +29,8 @@ import {
   NUSAEmblem, 
   WaecEmblemLogo,
   WaecEStudyLogo,
-  WaecVerifyLogo
+  WaecVerifyLogo,
+  CislLogo
 } from '../components/PartnerLogos';
 
 interface HomeViewProps {
@@ -130,12 +131,15 @@ export default function HomeView({ setActivePage, onOpenInquiry, theme = 'light'
           
           {/* Hero Left - Text block */}
           <div className="lg:col-span-7 space-y-6">
-            <div className={`inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold tracking-wider uppercase font-mono border ${
-              isDark 
-                ? 'bg-[#1E293B]/80 text-[#D4AF37] border-[#D4AF37]/35' 
-                : 'bg-[#116936]/10 text-[#116936] border-[#116936]/20'
-            }`}>
-              <Award className="w-4 h-4 shrink-0 text-[#116936]" /> MULTI-SECTOR SOLUTIONS MATRIX
+            <div className="flex flex-wrap items-center gap-4">
+              <CislLogo className="h-11 shadow-sm p-1 px-2.5 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200/20" />
+              <div className={`inline-flex items-center gap-2 px-3.5 py-2.5 rounded-full text-xs font-bold tracking-wider uppercase font-mono border ${
+                isDark 
+                  ? 'bg-[#1E293B]/80 text-[#D4AF37] border-[#D4AF37]/35' 
+                  : 'bg-[#116936]/10 text-[#116936] border-[#116936]/20'
+              }`}>
+                <Award className="w-4 h-4 shrink-0 text-[#116936]" /> MULTI-SECTOR SOLUTIONS MATRIX
+              </div>
             </div>
             
             <h1 className="font-sans font-extrabold text-3.5xl sm:text-5xl tracking-tight leading-tight">

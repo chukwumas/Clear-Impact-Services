@@ -7,6 +7,8 @@ import React, { useState } from 'react';
 import { Mail, Phone, MapPin, ChevronRight, MessageSquare, ArrowUpRight } from 'lucide-react';
 import { PageId } from '../types';
 import { CONTACT_INFO, CORE_SERVICES } from '../data';
+import { CislLogo } from './PartnerLogos';
+
 
 interface FooterProps {
   setActivePage: (page: PageId) => void;
@@ -34,13 +36,17 @@ export default function Footer({ setActivePage, onOpenInquiry }: FooterProps) {
           
           {/* Brand & Introduction */}
           <div className="space-y-4">
-            <div className="flex flex-col">
-              <span className="font-sans font-extrabold text-xl tracking-tight text-white">
-                CLEAR <span className="text-[#D4AF37]">IMPACT</span>
-              </span>
-              <span className="font-mono text-[9px] tracking-widest text-[#F4F6F9]/80 uppercase">
-                SERVICES LIMITED
-              </span>
+            <div className="flex items-center gap-3">
+              <CislLogo className="h-10 shrink-0" darkForce={true} />
+              <div className="h-7 w-px bg-[#134074]"></div>
+              <div className="flex flex-col">
+                <span className="font-sans font-extrabold text-sm tracking-tight text-white leading-none">
+                  CLEAR <span className="text-[#D4AF37]">IMPACT</span>
+                </span>
+                <span className="font-mono text-[7px] tracking-widest text-[#F4F6F9]/80 uppercase mt-0.5 whitespace-nowrap">
+                  SERVICES LIMITED
+                </span>
+              </div>
             </div>
             <p className="text-xs text-gray-300 leading-relaxed max-w-sm">
               Africa's leading impact-driven corporate, educational, and technology solutions provider. Delivering efficiency, robust security, and verified learning platforms.

@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Watch, MessageSquare, ShieldAlert, CheckCircle2, Send } from 'lucide-react';
+import { Mail, Phone, MapPin, Watch, MessageSquare, ShieldAlert, CheckCircle2, Send, User, Building, HelpCircle } from 'lucide-react';
 import { CONTACT_INFO } from '../data';
 import { InquirySubmission } from '../types';
 
@@ -187,7 +187,7 @@ ${fullName}`
           </div>
 
           {/* Right Column: Inline Inquiry Form */}
-          <div className={`p-6 md:p-8 rounded-lg border shadow-sm ${cardBgClass}`}>
+          <div className={`lg:col-span-7 p-6 sm:p-8 rounded-lg border shadow-sm ${cardBgClass}`}>
             {isSuccess ? (
               <div className="text-center py-12 space-y-4">
                 <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto animate-bounce" />
@@ -201,7 +201,7 @@ ${fullName}`
                 <div className="pt-4 flex flex-col sm:flex-row justify-center gap-3">
                   <a
                     href={mailtoLink}
-                    className="bg-[#116936] hover:bg-[#116936]/90 text-white text-xs font-bold py-3 px-6 rounded uppercase tracking-wider block text-center"
+                    className="bg-[#116936] hover:bg-[#116936]/90 text-white text-xs font-bold py-3 px-6 rounded uppercase tracking-wider block text-center border border-transparent transition-all"
                   >
                     Dispatch copy to info@cisl.africa
                   </a>
@@ -214,98 +214,149 @@ ${fullName}`
                 </div>
               </div>
             ) : (
-              <form onSubmit={handleInlineSubmit} className="space-y-4">
-                <h3 className={`font-sans font-bold text-lg tracking-tight border-b pb-2 mb-4 ${textPrimaryClass} ${isDark ? 'border-white/10' : 'border-gray-100'}`}>
-                  Enterprise Consultation Intake
-                </h3>
+              <form onSubmit={handleInlineSubmit} className="space-y-5">
+                <div>
+                  <h3 className={`font-sans font-extrabold text-xl tracking-tight border-b pb-2 mb-2 ${textPrimaryClass} ${isDark ? 'border-white/10' : 'border-gray-100'}`}>
+                    Enterprise Consultation Intake
+                  </h3>
+                  <p className="text-xs text-slate-400 mb-4">
+                    Fill the brief inquiry template below for immediate corporate planning assistance.
+                  </p>
+                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-650'}`}>
-                      Full Name *
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div className="space-y-1.5">
+                    <label className={`block text-[10px] font-bold uppercase tracking-wider ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                      Full Name <span className="text-red-500">*</span>
                     </label>
-                    <input
-                      type="text"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      placeholder="e.g. Joy Obasanjo"
-                      required
-                      className={`w-full text-xs border p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] ${isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-gray-300 text-[#0B2545]'}`}
-                    />
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                      <input
+                        type="text"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="e.g. Joy Obasanjo"
+                        required
+                        className={`w-full text-xs border pl-9 p-3 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] transition-all ${
+                          isDark 
+                            ? 'bg-slate-900 border-slate-800 text-white placeholder:text-slate-600 focus:border-[#D4AF37]' 
+                            : 'bg-white border-gray-300 text-[#0B2545] placeholder:text-slate-400 focus:border-[#0B2545]'
+                        }`}
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-650'}`}>
+                  <div className="space-y-1.5">
+                    <label className={`block text-[10px] font-bold uppercase tracking-wider ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                       Organization / School Name
                     </label>
-                    <input
-                      type="text"
-                      value={organization}
-                      onChange={(e) => setOrganization(e.target.value)}
-                      placeholder="e.g. Apex High-School"
-                      className={`w-full text-xs border p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] ${isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-gray-300 text-[#0B2545]'}`}
-                    />
+                    <div className="relative">
+                      <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                      <input
+                        type="text"
+                        value={organization}
+                        onChange={(e) => setOrganization(e.target.value)}
+                        placeholder="e.g. Apex High-School"
+                        className={`w-full text-xs border pl-9 p-3 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] transition-all ${
+                          isDark 
+                            ? 'bg-slate-900 border-slate-800 text-white placeholder:text-slate-600 focus:border-[#D4AF37]' 
+                            : 'bg-white border-gray-300 text-[#0B2545] placeholder:text-slate-400 focus:border-[#0B2545]'
+                        }`}
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-650'}`}>
-                      Email Address *
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div className="space-y-1.5">
+                    <label className={`block text-[10px] font-bold uppercase tracking-wider ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                      Email Address <span className="text-red-500">*</span>
                     </label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="name@organization.com"
-                      required
-                      className={`w-full text-xs border p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] ${isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-gray-300 text-[#0B2545]'}`}
-                    />
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="name@organization.com"
+                        required
+                        className={`w-full text-xs border pl-9 p-3 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] transition-all ${
+                          isDark 
+                            ? 'bg-slate-900 border-slate-800 text-white placeholder:text-slate-600 focus:border-[#D4AF37]' 
+                            : 'bg-white border-gray-300 text-[#0B2545] placeholder:text-slate-400 focus:border-[#0B2545]'
+                        }`}
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-650'}`}>
-                      Active Phone *
+                  <div className="space-y-1.5">
+                    <label className={`block text-[10px] font-bold uppercase tracking-wider ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                      Active Phone <span className="text-red-500">*</span>
                     </label>
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="e.g. 0803 776 2620"
-                      required
-                      className={`w-full text-xs border p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] ${isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-gray-300 text-[#0B2545]'}`}
-                    />
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                      <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="e.g. 0803 776 2620"
+                        required
+                        className={`w-full text-xs border pl-9 p-3 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] transition-all ${
+                          isDark 
+                            ? 'bg-slate-900 border-slate-800 text-white placeholder:text-slate-600 focus:border-[#D4AF37]' 
+                            : 'bg-white border-gray-300 text-[#0B2545] placeholder:text-slate-400 focus:border-[#0B2545]'
+                        }`}
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <div>
-                  <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-650'}`}>
-                    Service Pillar of Interest *
+                <div className="space-y-1.5">
+                  <label className={`block text-[10px] font-bold uppercase tracking-wider ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                    Service Pillar of Interest <span className="text-red-500">*</span>
                   </label>
-                  <select
-                    value={serviceCategory}
-                    onChange={(e) => setServiceCategory(e.target.value)}
-                    className={`w-full text-xs border p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] ${isDark ? 'bg-slate-900 border-slate-850 text-white' : 'bg-white border-gray-300 text-gray-800'}`}
-                  >
-                    <option value="Corporate Consulting">Corporate Consulting & Professional Training</option>
-                    <option value="Educational Technology">Educational & Digital Learning Services (WAEC E-Study / Verify)</option>
-                    <option value="International Exams">International Examination Support (IELTS / TKT)</option>
-                    <option value="Cybersecurity">Cybersecurity & Tech Services</option>
-                    <option value="Media & Branding">Media, Branding & Creative Services</option>
-                    <option value="Events & Youth Development">Events, Project & Youth Development</option>
-                  </select>
+                  <div className="relative">
+                    <HelpCircle className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                    <select
+                      value={serviceCategory}
+                      onChange={(e) => setServiceCategory(e.target.value)}
+                      className={`w-full text-xs border pl-9 p-3 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] transition-all appearance-none ${
+                        isDark 
+                          ? 'bg-slate-900 border-slate-800 text-white focus:border-[#D4AF37]' 
+                          : 'bg-white border-gray-300 text-gray-800 focus:border-[#0B2545]'
+                      }`}
+                    >
+                      <option value="Corporate Consulting">Corporate Consulting & Professional Training</option>
+                      <option value="Educational Technology">Educational & Digital Learning Services (WAEC E-Study / Verify)</option>
+                      <option value="International Exams">International Examination Support (IELTS / TKT)</option>
+                      <option value="Cybersecurity">Cybersecurity & Tech Services</option>
+                      <option value="Media & Branding">Media, Branding & Creative Services</option>
+                      <option value="Events & Youth Development">Events, Project & Youth Development</option>
+                    </select>
+                    {/* Retrofitted chevron indicator */}
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                      <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+                    </div>
+                  </div>
                 </div>
 
-                <div>
-                  <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-650'}`}>
-                    Support Requirements Details *
+                <div className="space-y-1.5">
+                  <label className={`block text-[10px] font-bold uppercase tracking-wider ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                    Support Requirements Details <span className="text-red-500">*</span>
                   </label>
-                  <textarea
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Briefly describe your training size, school, CBT requirements or event management inquiries..."
-                    rows={4}
-                    required
-                    className={`w-full text-xs border p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] ${isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-gray-300 text-[#0B2545]'}`}
-                  />
+                  <div className="relative">
+                    <MessageSquare className="absolute left-3 top-3.5 w-4 h-4 text-slate-400 pointer-events-none" />
+                    <textarea
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="Briefly describe your training size, school, CBT requirements or event management inquiries..."
+                      rows={5}
+                      required
+                      className={`w-full text-xs border pl-9 p-3 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] transition-all ${
+                        isDark 
+                          ? 'bg-slate-900 border-slate-800 text-white placeholder:text-slate-600 focus:border-[#D4AF37]' 
+                          : 'bg-white border-gray-300 text-[#0B2545] placeholder:text-slate-400 focus:border-[#0B2545]'
+                      }`}
+                    />
+                  </div>
                 </div>
 
                 {error && <p className="text-xs text-red-500 font-semibold">{error}</p>}
@@ -313,7 +364,7 @@ ${fullName}`
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-[#116936] hover:bg-[#116936]/90 text-white font-bold text-xs tracking-wider uppercase py-3.5 rounded shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full bg-[#116936] hover:bg-[#116936]/90 text-white font-bold text-xs tracking-wider uppercase py-4 rounded shadow hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
                 >
                   {isSubmitting ? 'Posting secure data...' : 'Submit Advisory Consultation'} <Send className="w-3.5 h-3.5" />
                 </button>

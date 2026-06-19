@@ -7,6 +7,8 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X, MessageSquare, ChevronRight, Sun, Moon } from 'lucide-react';
 import { PageId } from '../types';
 import { CONTACT_INFO } from '../data';
+import { CislLogo } from './PartnerLogos';
+
 
 interface HeaderProps {
   activePage: PageId;
@@ -56,22 +58,30 @@ export default function Header({ activePage, setActivePage, onOpenInquiry, theme
         <div className="max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between">
           {/* Logo Brand Area */}
           <div
-            className="flex flex-col cursor-pointer select-none"
+            className="flex items-center gap-3 cursor-pointer select-none"
             onClick={() => {
               setActivePage('home');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
           >
-            <span className={`font-sans font-bold text-base md:text-lg tracking-tight flex items-center gap-1 ${
-              theme === 'light' && isScrolled ? 'text-[#0B2545]' : 'text-white'
-            }`}>
-              CLEAR <span className="text-[#D4AF37]">IMPACT</span>
-            </span>
-            <span className={`font-mono text-[8px] tracking-widest uppercase ${
-              theme === 'light' && isScrolled ? 'text-[#0B2545]/65' : 'text-[#F4F6F9]/70'
-            }`}>
-              SERVICES LIMITED
-            </span>
+            {/* The brand vector logo */}
+            <CislLogo className="h-9 md:h-11" />
+            
+            {/* Divider line between mark & text */}
+            <div className={`h-8 w-px ${theme === 'light' && isScrolled ? 'bg-slate-300' : 'bg-white/25'}`}></div>
+
+            <div className="flex flex-col text-left">
+              <span className={`font-sans font-extrabold text-xs md:text-sm tracking-tight leading-none flex items-center gap-1 ${
+                theme === 'light' && isScrolled ? 'text-[#0B2545]' : 'text-white'
+              }`}>
+                CLEAR <span className="text-[#D4AF37]">IMPACT</span>
+              </span>
+              <span className={`font-mono text-[7px] md:text-[8px] tracking-widest leading-none mt-1 uppercase ${
+                theme === 'light' && isScrolled ? 'text-[#0B2545]/65' : 'text-[#F4F6F9]/75'
+              }`}>
+                SERVICES LIMITED
+              </span>
+            </div>
           </div>
 
           {/* Desktop Navigation (lg and up) */}

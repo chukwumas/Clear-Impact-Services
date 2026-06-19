@@ -244,3 +244,36 @@ export function WaecVerifyLogo({ className = "h-11" }: { className?: string }) {
     </div>
   );
 }
+
+export function CislLogo({ className = "h-12", darkForce = false }: { className?: string, darkForce?: boolean }) {
+  return (
+    <div className={`inline-flex items-center ${className}`}>
+      <svg className="h-full w-auto shrink-0" viewBox="0 0 160 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Top Horizontal line */}
+        {/* Left black line: black on light background, white/currentColor otherwise */}
+        <rect x="5" y="8" width="60" height="4" rx="1.5" className={darkForce ? "fill-white" : "fill-slate-900 dark:fill-white"} />
+        
+        {/* Middle Orange/Coral Dot */}
+        <circle cx="75" cy="10" r="7.5" fill="#EF5A3F" />
+        
+        {/* Right grey line */}
+        <rect x="85" y="8" width="70" height="4" rx="1.5" fill="#A3A3A3" />
+        
+        {/* Lowercase wordmark "cisl" */}
+        <text 
+          x="80" 
+          y="44" 
+          className={darkForce ? "fill-white" : "fill-slate-900 dark:fill-white"}
+          fontSize="34" 
+          fontWeight="900" 
+          fontFamily='"Inter", "Arial Black", "Helvetica Neue", sans-serif' 
+          textAnchor="middle" 
+          letterSpacing="2.5"
+        >
+          cisl
+        </text>
+      </svg>
+    </div>
+  );
+}
+
