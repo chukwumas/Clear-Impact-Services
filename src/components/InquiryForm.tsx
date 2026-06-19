@@ -44,6 +44,24 @@ export default function InquiryForm({ isOpen, onClose, initialService = '' }: In
     }
   };
 
+  const mailtoLink = `mailto:info@cisl.africa?subject=${encodeURIComponent(`Clear Impact Inquiry: ${serviceCategory}`)}&body=${encodeURIComponent(
+    `Hello Clear Impact Advisory Office,
+
+I would like to submit an official inquiry with details below:
+
+- Full Name: ${fullName}
+- Institution/Organization: ${organization || '[Individual]'}
+- Email Address: ${email}
+- Phone Number: ${phone}
+- Service Area: ${serviceCategory}
+
+Inquiry Details:
+${message}
+
+Best regards,
+${fullName}`
+  )}`;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) {
@@ -75,6 +93,13 @@ export default function InquiryForm({ isOpen, onClose, initialService = '' }: In
 
       setIsSubmitting(false);
       setIsSuccess(true);
+
+      // Attempt automatic mail redirect
+      try {
+        window.location.href = mailtoLink;
+      } catch (err) {
+        console.warn('Mail redirection prevented by browser context.', err);
+      }
     }, 1200);
   };
 
@@ -121,47 +146,47 @@ export default function InquiryForm({ isOpen, onClose, initialService = '' }: In
         {/* Modal Main Body */}
         <div className="p-6 md:p-8 max-h-[80vh] overflow-y-auto">
           {isSuccess ? (
-            <div className="text-center py-10">
+            <div className="text-center py-10 animate-fade-in">
               <div className="flex justify-center mb-4">
                 <CheckCircle2 className="w-16 h-16 text-green-500 animate-bounce" />
               </div>
               <h4 className="font-sans font-bold text-xl text-[#0B2545] tracking-tight mb-2">
-                Inquiry Logged successfully!
+                Inquiry Registered Successfully!
               </h4>
-              <p className="text-sm text-gray-600 max-w-md mx-auto mb-6">
-                Thank you for contacting Clear Impact Services Limited. Your registration details have been securely captured. A senior consultant will reach out via email or phone within 2 hours.
+              <p className="text-sm text-gray-600 max-w-md mx-auto mb-4 text-slate-650">
+                Thank you! Your consultation details are registered. Your inquiry details have been packaged to route straight to <strong className="text-[#116936]">info@cisl.africa</strong>.
               </p>
-              <div className="p-4 bg-[#F4F6F9] rounded-lg border border-[#E2E8F0] text-left max-w-md mx-auto mb-8">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Logged Parameters:</p>
+              
+              <div className="p-4 bg-[#F4F6F9] rounded-lg border border-[#E2E8F0] text-left max-w-md mx-auto mb-6">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Inquiry Details:</p>
                 <div className="grid grid-cols-3 gap-2 text-xs">
-                  <span className="font-semibold text-gray-600">Client:</span>
-                  <span className="col-span-2 text-gray-900">{fullName}</span>
+                  <span className="font-semibold text-gray-600">Client Name:</span>
+                  <span className="col-span-2 text-gray-950 font-medium">{fullName}</span>
 
-                  <span className="font-semibold text-gray-600">Context:</span>
-                  <span className="col-span-2 text-gray-900">{serviceCategory}</span>
+                  <span className="font-semibold text-gray-600">Topic:</span>
+                  <span className="col-span-2 text-gray-950 font-medium">{serviceCategory}</span>
 
-                  <span className="font-semibold text-gray-600">Channel:</span>
-                  <span className="col-span-2 text-gray-900">{email} / {phone}</span>
+                  <span className="font-semibold text-gray-600">Registry:</span>
+                  <span className="col-span-2 text-[#D4AF37] font-semibold">info@cisl.africa</span>
                 </div>
               </div>
-              <div className="flex justify-center gap-3">
+
+              <div className="flex flex-col sm:flex-row justify-center gap-3">
+                <a
+                  href={mailtoLink}
+                  className="bg-[#116936] hover:bg-[#116936]/90 text-white font-bold text-xs uppercase tracking-wider py-3.5 px-6 rounded flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+                >
+                  Confirm & Send Email Draft
+                </a>
                 <button
                   onClick={() => {
                     resetForm();
                     onClose();
                   }}
-                  className="bg-[#0B2545] hover:bg-[#134074] text-white font-semibold text-sm py-2.5 px-6 rounded transition-colors"
+                  className="bg-slate-850 hover:bg-slate-900 text-white font-semibold text-xs uppercase tracking-wider py-3 px-6 rounded cursor-pointer"
                 >
-                  Done
+                  Close Modal
                 </button>
-                <a
-                  href={`https://wa.me/2348037762620?text=Hello,%20I%20just%20submitted%20a%20website%20consultation%20form%20for%20${encodeURIComponent(fullName)}.%20Looking%20forward%20to%20your%20response.`}
-                  target="_blank"
-                  referrerPolicy="no-referrer"
-                  className="bg-green-500 hover:bg-green-600 text-white font-semibold text-sm py-2.5 px-6 rounded flex items-center gap-1.5 transition-colors"
-                >
-                  Follow up on WhatsApp
-                </a>
               </div>
             </div>
           ) : (

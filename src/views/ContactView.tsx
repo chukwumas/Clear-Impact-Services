@@ -8,7 +8,11 @@ import { Mail, Phone, MapPin, Watch, MessageSquare, ShieldAlert, CheckCircle2, S
 import { CONTACT_INFO } from '../data';
 import { InquirySubmission } from '../types';
 
-export default function ContactView() {
+interface ContactViewProps {
+  theme?: 'light' | 'dark';
+}
+
+export default function ContactView({ theme = 'light' }: ContactViewProps) {
   const [fullName, setFullName] = useState('');
   const [organization, setOrganization] = useState('');
   const [email, setEmail] = useState('');
@@ -18,6 +22,30 @@ export default function ContactView() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
+
+  const isDark = theme === 'dark';
+  const mainBgClass = isDark ? 'bg-[#11151F] text-[#E2E8F0]' : 'bg-[#FAF8F5] text-[#1D242E]';
+  const cardBgClass = isDark ? 'bg-[#191F2D] border-white/5' : 'bg-white border-gray-200';
+  const subBgClass = isDark ? 'bg-[#21293B]' : 'bg-[#F4F6F9]';
+  const textPrimaryClass = isDark ? 'text-white' : 'text-[#0B2545]';
+
+  const mailtoLink = `mailto:info@cisl.africa?subject=${encodeURIComponent(`Clear Impact Inquiry: ${serviceCategory}`)}&body=${encodeURIComponent(
+    `Hello Clear Impact Advisory Office,
+
+I would like to submit an official inquiry with details below:
+
+- Full Name: ${fullName}
+- Organization/School: ${organization || '[Individual]'}
+- Email Address: ${email}
+- Phone Number: ${phone}
+- Service Area: ${serviceCategory}
+
+Inquiry Details:
+${message}
+
+Best regards,
+${fullName}`
+  )}`;
 
   const handleInlineSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,6 +78,13 @@ export default function ContactView() {
       setIsSubmitting(false);
       setIsSuccess(true);
       setError('');
+
+      // Attempt automatic redirect to mail client
+      try {
+        window.location.href = mailtoLink;
+      } catch (err) {
+        console.warn('Mail client automatic launch prevented by browser context.', err);
+      }
     }, 1200);
   };
 
@@ -64,19 +99,19 @@ export default function ContactView() {
   };
 
   return (
-    <div className="animate-fade-in py-12 bg-[#F4F6F9]">
+    <div className={`animate-fade-in py-12 transition-colors duration-300 ${mainBgClass}`}>
       <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-12">
         
         {/* Title elements */}
-        <div className="bg-white p-8 rounded-lg border border-gray-200 shadow-sm text-center md:text-left">
+        <div className={`p-8 rounded-lg border shadow-sm text-center md:text-left ${cardBgClass}`}>
           <span className="font-mono text-xs text-[#D4AF37] font-bold uppercase tracking-widest block mb-1">
             Contact Gateway
           </span>
-          <h1 className="font-sans font-extrabold text-3xl md:text-4xl text-[#0B2545] tracking-tight">
+          <h1 className={`font-sans font-extrabold text-3xl md:text-4xl tracking-tight ${textPrimaryClass}`}>
             Connect With Our Advisory Office
           </h1>
-          <p className="text-sm text-gray-500 mt-2 max-w-2xl leading-relaxed">
-            Reach out via phone, direct WhatsApp, secure inbox, or visit our permanent registered headquarters in Port Harcourt, Rivers State.
+          <p className="text-sm text-gray-400 mt-2 max-w-2xl leading-relaxed">
+            Reach out via phone, direct WhatsApp, secure inbox, or visit our permanent registered headquarters in Port Harcourt, Rivers State. All forms route automatically to our central registry.
           </p>
         </div>
 
@@ -86,25 +121,25 @@ export default function ContactView() {
           {/* Left Column: Direct coordinates & Simulated interactive map */}
           <div className="lg:col-span-5 space-y-8">
             {/* Coordinates widget */}
-            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm space-y-4">
-              <h3 className="font-sans font-bold text-lg text-[#0B2545] tracking-tight border-b pb-2">
+            <div className={`p-6 rounded-lg border shadow-sm space-y-4 ${cardBgClass}`}>
+              <h3 className={`font-sans font-bold text-lg tracking-tight border-b pb-2 ${textPrimaryClass} ${isDark ? 'border-white/10' : 'border-gray-100'}`}>
                 Corporate Coordinates
               </h3>
 
-              <div className="space-y-4 font-sans text-xs text-gray-600">
+              <div className="space-y-4 font-sans text-xs text-gray-400">
                 <div className="flex gap-3 leading-relaxed">
                   <MapPin className="w-5 h-5 text-[#D4AF37] shrink-0" />
                   <div>
-                    <p className="font-bold text-[#0B2545]">Physical Registered Address:</p>
+                    <p className={`font-bold ${textPrimaryClass}`}>Physical Registered Address:</p>
                     <p>{CONTACT_INFO.address}</p>
-                    <span className="text-[10px] text-gray-400 font-mono italic">Near Airport Road Intersection, Rumuosi</span>
+                    <span className="text-[10px] text-slate-500 font-mono italic">Near Airport Road Intersection, Rumuosi</span>
                   </div>
                 </div>
 
                 <div className="flex gap-3 items-center">
                   <Phone className="w-5 h-5 text-[#D4AF37] shrink-0" />
                   <div>
-                    <p className="font-bold text-[#0B2545]">Active Phone Contacts:</p>
+                    <p className={`font-bold ${textPrimaryClass}`}>Active Phone Contacts:</p>
                     <p>{CONTACT_INFO.phones.join(' OR ')}</p>
                   </div>
                 </div>
@@ -112,15 +147,15 @@ export default function ContactView() {
                 <div className="flex gap-3 items-center">
                   <Mail className="w-5 h-5 text-[#D4AF37] shrink-0" />
                   <div>
-                    <p className="font-bold text-[#0B2545]">Official Inbox Portal:</p>
-                    <p className="truncate">{CONTACT_INFO.email}</p>
+                    <p className={`font-bold ${textPrimaryClass}`}>Official Inbox Portal:</p>
+                    <p className="truncate">info@cisl.africa</p>
                   </div>
                 </div>
 
                 <div className="flex gap-3 items-center">
                   <Watch className="w-5 h-5 text-[#D4AF37] shrink-0" />
                   <div>
-                    <p className="font-bold text-[#0B2545]">Operational Hours:</p>
+                    <p className={`font-bold ${textPrimaryClass}`}>Operational Hours:</p>
                     <p>Monday - Friday: 08:00 AM - 05:00 PM (GMT +1)</p>
                   </div>
                 </div>
@@ -128,9 +163,9 @@ export default function ContactView() {
             </div>
 
             {/* High level visual custom simulated map */}
-            <div className="bg-[#0B2545] text-white p-6 rounded-lg border border-[#D4AF37]/15 relative overflow-hidden h-72 flex flex-col justify-between shadow">
+            <div className={`text-white p-6 rounded-lg border relative overflow-hidden h-72 flex flex-col justify-between shadow ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-[#0B2545] border-[#D4AF37]/15'}`}>
               {/* Subtle map lines */}
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,#134074_1.5px,transparent_1.5px),linear-gradient(to_bottom,#134074_1.5px,transparent_1.5px)] bg-[size:2rem_2rem] opacity-25"></div>
+              <div className={`absolute inset-0 bg-[linear-gradient(to_right,#134074_1.5px,transparent_1.5px),linear-gradient(to_bottom,#134074_1.5px,transparent_1.5px)] bg-[size:2rem_2rem] opacity-25`}></div>
               
               <div className="font-mono text-[9px] uppercase tracking-widest text-[#D4AF37]">
                 Port Harcourt Geographic Pointer
@@ -146,46 +181,47 @@ export default function ContactView() {
 
               <div className="flex justify-between items-center text-[10px] font-mono border-t border-[#134074] pt-2 text-gray-400">
                 <span>Coordinates: 4.887° N, 6.974° E</span>
-                <span className="text-white font-bold bg-[#134074] px-1.5 py-0.5 rounded">Rimuosi State Registry</span>
+                <span className="text-white font-bold bg-[#134074] px-1.5 py-0.5 rounded">Rumuosi State Registry</span>
               </div>
             </div>
           </div>
 
           {/* Right Column: Inline Inquiry Form */}
-          <div className="lg:col-span-7 bg-white p-6 md:p-8 rounded-lg border border-gray-200 shadow-sm">
+          <div className={`p-6 md:p-8 rounded-lg border shadow-sm ${cardBgClass}`}>
             {isSuccess ? (
               <div className="text-center py-12 space-y-4">
                 <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto animate-bounce" />
-                <h3 className="font-sans font-bold text-xl text-[#0B2545] tracking-tight">Inquiry Logged</h3>
-                <p className="text-xs text-gray-500 max-w-md mx-auto">
-                  Thank you Dr./Mr./Mrs. Your consultation agenda is securely posted. A senior advisor will call or email back within 2 hours.
+                <h3 className={`font-sans font-bold text-xl tracking-tight ${textPrimaryClass}`}>Inquiry Logged</h3>
+                <p className="text-xs text-shared-gray max-w-md mx-auto text-gray-400">
+                  Thank you! Your consultation details are registered in our local system. The form has been packaged to routes directly to <strong className="text-[#D4AF37]">info@cisl.africa</strong>.
                 </p>
-                <div className="pt-4 flex justify-center gap-3">
+                <p className="text-[11px] text-[#D4AF37] max-w-xs mx-auto italic">
+                  Note: If your local email client did not open the draft automatically, utilize the dispatch button below:
+                </p>
+                <div className="pt-4 flex flex-col sm:flex-row justify-center gap-3">
+                  <a
+                    href={mailtoLink}
+                    className="bg-[#116936] hover:bg-[#116936]/90 text-white text-xs font-bold py-3 px-6 rounded uppercase tracking-wider block text-center"
+                  >
+                    Dispatch copy to info@cisl.africa
+                  </a>
                   <button 
                     onClick={resetForm}
-                    className="bg-[#0B2545] hover:bg-[#134074] text-white text-xs font-bold py-2.5 px-6 rounded uppercase tracking-wider"
+                    className={`text-xs font-bold py-3 px-6 rounded uppercase tracking-wider border ${isDark ? 'border-slate-800 text-white bg-slate-800/40 hover:bg-slate-850' : 'border-gray-250 text-gray-700 bg-gray-50 hover:bg-gray-100'}`}
                   >
                     Submit New Message
                   </button>
-                  <a
-                    href={CONTACT_INFO.socials.whatsapp}
-                    target="_blank"
-                    referrerPolicy="no-referrer"
-                    className="bg-green-500 hover:bg-green-600 text-white text-xs font-bold py-2.5 px-6 rounded flex items-center gap-1.5 transition-colors uppercase tracking-wider"
-                  >
-                    WhatsApp Advisory Check-In
-                  </a>
                 </div>
               </div>
             ) : (
               <form onSubmit={handleInlineSubmit} className="space-y-4">
-                <h3 className="font-sans font-bold text-lg text-[#0B2545] tracking-tight border-b pb-2 mb-4">
+                <h3 className={`font-sans font-bold text-lg tracking-tight border-b pb-2 mb-4 ${textPrimaryClass} ${isDark ? 'border-white/10' : 'border-gray-100'}`}>
                   Enterprise Consultation Intake
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-gray-600 tracking-wider mb-1.5">
+                    <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-650'}`}>
                       Full Name *
                     </label>
                     <input
@@ -194,11 +230,11 @@ export default function ContactView() {
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder="e.g. Joy Obasanjo"
                       required
-                      className="w-full text-xs border border-gray-300 p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#0B2545]"
+                      className={`w-full text-xs border p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] ${isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-gray-300 text-[#0B2545]'}`}
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-gray-600 tracking-wider mb-1.5">
+                    <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-650'}`}>
                       Organization / School Name
                     </label>
                     <input
@@ -206,14 +242,14 @@ export default function ContactView() {
                       value={organization}
                       onChange={(e) => setOrganization(e.target.value)}
                       placeholder="e.g. Apex High-School"
-                      className="w-full text-xs border border-gray-300 p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#0B2545]"
+                      className={`w-full text-xs border p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] ${isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-gray-300 text-[#0B2545]'}`}
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-gray-600 tracking-wider mb-1.5">
+                    <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-650'}`}>
                       Email Address *
                     </label>
                     <input
@@ -222,11 +258,11 @@ export default function ContactView() {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="name@organization.com"
                       required
-                      className="w-full text-xs border border-gray-300 p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#0B2545]"
+                      className={`w-full text-xs border p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] ${isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-gray-300 text-[#0B2545]'}`}
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-gray-600 tracking-wider mb-1.5">
+                    <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-650'}`}>
                       Active Phone *
                     </label>
                     <input
@@ -235,22 +271,22 @@ export default function ContactView() {
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="e.g. 0803 776 2620"
                       required
-                      className="w-full text-xs border border-gray-300 p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#0B2545]"
+                      className={`w-full text-xs border p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] ${isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-gray-300 text-[#0B2545]'}`}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-gray-600 tracking-wider mb-1.5">
+                  <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-650'}`}>
                     Service Pillar of Interest *
                   </label>
                   <select
                     value={serviceCategory}
                     onChange={(e) => setServiceCategory(e.target.value)}
-                    className="w-full text-xs border border-gray-300 p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#0B2545] bg-white text-gray-800"
+                    className={`w-full text-xs border p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] ${isDark ? 'bg-slate-900 border-slate-850 text-white' : 'bg-white border-gray-300 text-gray-800'}`}
                   >
                     <option value="Corporate Consulting">Corporate Consulting & Professional Training</option>
-                    <option value="Educational Technology">Educational & Digital Learning Services (WAEC E-Study)</option>
+                    <option value="Educational Technology">Educational & Digital Learning Services (WAEC E-Study / Verify)</option>
                     <option value="International Exams">International Examination Support (IELTS / TKT)</option>
                     <option value="Cybersecurity">Cybersecurity & Tech Services</option>
                     <option value="Media & Branding">Media, Branding & Creative Services</option>
@@ -259,7 +295,7 @@ export default function ContactView() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-gray-600 tracking-wider mb-1.5">
+                  <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-650'}`}>
                     Support Requirements Details *
                   </label>
                   <textarea
@@ -268,7 +304,7 @@ export default function ContactView() {
                     placeholder="Briefly describe your training size, school, CBT requirements or event management inquiries..."
                     rows={4}
                     required
-                    className="w-full text-xs border border-gray-300 p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#0B2545]"
+                    className={`w-full text-xs border p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37] ${isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-gray-300 text-[#0B2545]'}`}
                   />
                 </div>
 
@@ -277,7 +313,7 @@ export default function ContactView() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-[#0B2545] hover:bg-[#134074] text-white font-bold text-xs tracking-wider uppercase py-3 rounded shadow transition-all flex items-center justify-center gap-2"
+                  className="w-full bg-[#116936] hover:bg-[#116936]/90 text-white font-bold text-xs tracking-wider uppercase py-3.5 rounded shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {isSubmitting ? 'Posting secure data...' : 'Submit Advisory Consultation'} <Send className="w-3.5 h-3.5" />
                 </button>
@@ -288,7 +324,7 @@ export default function ContactView() {
         </div>
 
         {/* Physical coordinates verify alert */}
-        <div className="p-4 bg-yellow-50 border border-yellow-200 text-xs text-gray-600 rounded flex gap-3 leading-relaxed">
+        <div className={`p-4 border text-xs rounded flex gap-3 leading-relaxed ${isDark ? 'bg-amber-950/20 border-amber-900/40 text-amber-200' : 'bg-yellow-50 border-yellow-250 text-gray-700'}`}>
           <ShieldAlert className="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" />
           <span>Need help finding us? Plot 114 is located along the primary Rumuosi/Rumuagholu link-way just off the Airport Road intersection. Call our local logistics helpdesk at 08037762620 if lost!</span>
         </div>

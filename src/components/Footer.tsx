@@ -58,70 +58,34 @@ export default function Footer({ setActivePage, onOpenInquiry }: FooterProps) {
             <h4 className="font-sans font-bold text-sm tracking-wide text-white border-b border-[#134074] pb-2 uppercase">
               Corporate Site Map
             </h4>
-            <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="grid grid-cols-1 gap-2.5 text-xs">
               <button
                 onClick={() => { setActivePage('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="text-left py-1 text-gray-300 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors"
+                className="text-left py-1 text-gray-300 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <ChevronRight className="w-3 h-3 text-[#D4AF37]" /> Home
               </button>
               <button
                 onClick={() => { setActivePage('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="text-left py-1 text-gray-300 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors"
+                className="text-left py-1 text-gray-300 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors cursor-pointer"
               >
-                <ChevronRight className="w-3 h-3 text-[#D4AF37]" /> About Us
+                <ChevronRight className="w-3 h-3 text-[#D4AF37]" /> About Us (Profile, Alliances, Media, Gated Library)
               </button>
               <button
                 onClick={() => { setActivePage('services'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="text-left py-1 text-gray-300 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors"
+                className="text-left py-1 text-gray-300 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors cursor-pointer"
               >
-                <ChevronRight className="w-3 h-3 text-[#D4AF37]" /> Services
-              </button>
-              <button
-                onClick={() => { setActivePage('waec'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="text-left py-1 text-gray-300 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors"
-              >
-                <ChevronRight className="w-3 h-3 text-[#D4AF37]" /> WAEC E-Study
-              </button>
-              <button
-                onClick={() => { setActivePage('training'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="text-left py-1 text-gray-300 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors"
-              >
-                <ChevronRight className="w-3 h-3 text-[#D4AF37]" /> Training
-              </button>
-              <button
-                onClick={() => { setActivePage('projects'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="text-left py-1 text-gray-300 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors"
-              >
-                <ChevronRight className="w-3 h-3 text-[#D4AF37]" /> Projects & Events
-              </button>
-              <button
-                onClick={() => { setActivePage('partners'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="text-left py-1 text-gray-300 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors"
-              >
-                <ChevronRight className="w-3 h-3 text-[#D4AF37]" /> Partners
-              </button>
-              <button
-                onClick={() => { setActivePage('gallery'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="text-left py-1 text-gray-300 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors"
-              >
-                <ChevronRight className="w-3 h-3 text-[#D4AF37]" /> Gallery
+                <ChevronRight className="w-3 h-3 text-[#D4AF37]" /> Solutions Matrix (Divisions, WAEC Suite, Training, Events)
               </button>
               <button
                 onClick={() => { setActivePage('blog'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="text-left py-1 text-gray-300 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors"
+                className="text-left py-1 text-gray-300 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors cursor-pointer"
               >
-                <ChevronRight className="w-3 h-3 text-[#D4AF37]" /> News / Blog
-              </button>
-              <button
-                onClick={() => { setActivePage('downloads'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="text-left py-1 text-gray-300 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors"
-              >
-                <ChevronRight className="w-3 h-3 text-[#D4AF37]" /> Downloads
+                <ChevronRight className="w-3 h-3 text-[#D4AF37]" /> News & Blog Articles
               </button>
               <button
                 onClick={() => { setActivePage('contact'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="text-left col-span-2 py-1 text-[#D4AF37] hover:underline flex items-center gap-1.5 transition-colors"
+                className="text-left py-1 text-[#D4AF37] hover:underline flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <ChevronRight className="w-3 h-3 text-[#D4AF37]" /> Contact Desk
               </button>

@@ -15,13 +15,7 @@ import { PageId } from './types';
 import HomeView from './views/HomeView';
 import AboutView from './views/AboutView';
 import ServicesView from './views/ServicesView';
-import WaecView from './views/WaecView';
-import TrainingView from './views/TrainingView';
-import ProjectsView from './views/ProjectsView';
-import PartnersView from './views/PartnersView';
-import GalleryView from './views/GalleryView';
 import BlogView from './views/BlogView';
-import DownloadsView from './views/DownloadsView';
 import ContactView from './views/ContactView';
 import AdminView from './views/AdminView';
 
@@ -29,6 +23,19 @@ export default function App() {
   const [activePage, setActivePage] = useState<PageId>('home');
   const [isInquiryOpen, setIsInquiryOpen] = useState(false);
   const [preselectedService, setPreselectedService] = useState('');
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    return (localStorage.getItem('clear_impact_theme') as 'light' | 'dark') || 'light';
+  });
+
+  // Track and synchronize class list for nested components representation
+  useEffect(() => {
+    localStorage.setItem('clear_impact_theme', theme);
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
 
   // Scroll to top on page switches
   useEffect(() => {
@@ -43,42 +50,42 @@ export default function App() {
   const renderActiveView = () => {
     switch (activePage) {
       case 'home':
-        return <HomeView setActivePage={setActivePage} onOpenInquiry={openInquiryPortal} />;
+        return <HomeView setActivePage={setActivePage} onOpenInquiry={openInquiryPortal} theme={theme} />;
       case 'about':
-        return <AboutView />;
-      case 'services':
-        return <ServicesView onOpenInquiry={openInquiryPortal} />;
-      case 'waec':
-        return <WaecView onOpenInquiry={openInquiryPortal} />;
-      case 'training':
-        return <TrainingView onOpenInquiry={openInquiryPortal} />;
-      case 'projects':
-        return <ProjectsView onOpenInquiry={openInquiryPortal} />;
       case 'partners':
-        return <PartnersView setActivePage={setActivePage} onOpenInquiry={openInquiryPortal} />;
       case 'gallery':
-        return <GalleryView />;
-      case 'blog':
-        return <BlogView />;
       case 'downloads':
-        return <DownloadsView />;
+        return <AboutView theme={theme} />;
+      case 'services':
+      case 'waec':
+      case 'training':
+      case 'projects':
+        return <ServicesView onOpenInquiry={openInquiryPortal} theme={theme} />;
+      case 'blog':
+        return <BlogView theme={theme} />;
       case 'contact':
-        return <ContactView />;
+        return <ContactView theme={theme} />;
       case 'admin':
-        return <AdminView />;
+        return <AdminView theme={theme} />;
       default:
-        return <HomeView setActivePage={setActivePage} onOpenInquiry={openInquiryPortal} />;
+        return <HomeView setActivePage={setActivePage} onOpenInquiry={openInquiryPortal} theme={theme} />;
     }
   };
 
+  const bgClass = theme === 'dark' 
+    ? 'bg-[#11151F] text-[#E2E8F0]' 
+    : 'bg-[#FAF8F5] text-[#1D242E]';
+
   return (
-    <div className="min-h-screen bg-[#F4F6F9] text-[#1D242E] flex flex-col justify-between font-sans selection:bg-[#D4AF37] selection:text-[#0B2545]">
+    <div className={`min-h-screen ${bgClass} flex flex-col justify-between font-sans selection:bg-[#D4AF37] selection:text-[#0B2545] transition-colors duration-300`}>
       
       {/* Sticky Header Navigation Component */}
       <Header 
         activePage={activePage} 
         setActivePage={setActivePage} 
         onOpenInquiry={() => openInquiryPortal('')} 
+        theme={theme}
+        setTheme={setTheme}
       />
 
       {/* Main Main Stage Area */}
