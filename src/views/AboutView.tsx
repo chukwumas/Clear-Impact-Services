@@ -23,7 +23,6 @@ import {
   LockKeyhole
 } from 'lucide-react';
 import { CONTACT_INFO, PARTNERSHIPS, GALLERY_ITEMS, DOWNLOADS_CATALOG } from '../data';
-import { DownloadItem } from '../types';
 
 type AboutTab = 'profile' | 'partners' | 'gallery' | 'downloads';
 type GalleryFilter = 'all' | 'training' | 'festivals' | 'youth' | 'school';
@@ -38,13 +37,6 @@ export default function AboutView({ theme = 'light' }: AboutViewProps) {
   // Gallery states
   const [galleryFilter, setGalleryFilter] = useState<GalleryFilter>('all');
   const [activePhoto, setActivePhoto] = useState<string | null>(null);
-
-  // Downloads states
-  const [gateEmail, setGateEmail] = useState('');
-  const [gateName, setGateName] = useState('');
-  const [isGated, setIsGated] = useState(true);
-  const [activeDownload, setActiveDownload] = useState<string | null>(null);
-  const [downloadsError, setDownloadsError] = useState('');
 
   const coreValues = [
     { name: "Excellence", desc: "Setting high-quality standards in capacity building and technological setup." },
@@ -84,49 +76,12 @@ export default function AboutView({ theme = 'light' }: AboutViewProps) {
     }
   };
 
-  // Downloads submit handler
-  const handleUnlockDownloads = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!gateName.trim() || !gateEmail.trim() || !/\S+@\S+\.\S+/.test(gateEmail)) {
-      setDownloadsError('Please provide a valid name and active corporate email address');
-      return;
-    }
-    
-    // Track interest in local ledger
-    const submission = {
-      id: 'dwn_' + Math.random().toString(36).substr(2, 9),
-      timestamp: new Date().toLocaleString(),
-      fullName: gateName,
-      organization: '[Resource Download Lead]',
-      email: gateEmail,
-      phone: '[Not Provided]',
-      serviceCategory: 'Resource Downloads',
-      message: `Requested corporate materials downloaded: ${activeDownload || 'Corporate Profile'}`,
-      status: 'New' as const
-    };
-
-    const existingStr = localStorage.getItem('clear_impact_inquiries');
-    const existing = existingStr ? JSON.parse(existingStr) : [];
-    existing.unshift(submission);
-    localStorage.setItem('clear_impact_inquiries', JSON.stringify(existing));
-
-    setIsGated(false);
-    setDownloadsError('');
-  };
-
-  const triggerDownloadFile = (item: DownloadItem) => {
-    setActiveDownload(item.title);
-    if (!isGated) {
-      alert(`Download complete: Initiating saved stream for "${item.title}" successfully.`);
-    }
-  };
-
   // Tab config
   const tabsConfig: { id: AboutTab; label: string }[] = [
     { id: 'profile', label: 'Corporate Profile' },
     { id: 'partners', label: 'Strategic Alliances' },
     { id: 'gallery', label: 'Media Portfolio' },
-    { id: 'downloads', label: 'Gated Resources' }
+    { id: 'downloads', label: 'Resource Requests' }
   ];
 
   const mainBgClass = theme === 'dark' ? 'bg-[#11151F] text-[#E2E8F0]' : 'bg-[#FAF8F5] text-[#1D242E]';
@@ -465,80 +420,8 @@ export default function AboutView({ theme = 'light' }: AboutViewProps) {
           {/* TAB 4: DOWNLOADS */}
           {activeTab === 'downloads' && (
             <div className="space-y-12 animate-fade-in mb-10">
-              {isGated ? (
-                <div className={`${cardBgClass} border rounded-xl p-8 max-w-lg mx-auto shadow-md space-y-6`}>
-                  <div className="text-center space-y-2">
-                    <LockKeyhole className="w-12 h-12 text-[#D4AF37] mx-auto animate-pulse" />
-                    <h2 className={`font-sans font-bold text-lg tracking-tight ${theme === 'dark' ? 'text-white' : 'text-[#0B2545]'}`}>
-                      Unlock Secured Corporate Library
-                    </h2>
-                    <p className="text-xs text-gray-400 max-w-sm mx-auto">
-                      Please enter your name and organizational email to unlock our corporate dossier, calendars, and licensing manuals instantly.
-                    </p>
-                  </div>
-
-                  <form onSubmit={handleUnlockDownloads} className="space-y-4 text-xs">
-                    <div>
-                      <label className="block text-[10px] font-extrabold uppercase text-gray-400 tracking-wider mb-1.5">
-                        Your Full Name
-                      </label>
-                      <input
-                        type="text"
-                        value={gateName}
-                        onChange={(e) => setGateName(e.target.value)}
-                        placeholder="e.g. Dr. Florence Alaba"
-                        required
-                        className={`w-full p-2.5 rounded border focus:outline-none ${
-                          theme === 'dark' 
-                            ? 'bg-black/20 border-white/10 text-white focus:border-[#D4AF37]' 
-                            : 'bg-gray-100 border-gray-300 text-gray-800 focus:border-[#0B2545]'
-                        }`}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-[10px] font-extrabold uppercase text-gray-400 tracking-wider mb-1.5">
-                        Corporate / Institutional Email
-                      </label>
-                      <input
-                        type="email"
-                        value={gateEmail}
-                        onChange={(e) => setGateEmail(e.target.value)}
-                        placeholder="name@organization.com"
-                        required
-                        className={`w-full p-2.5 rounded border focus:outline-none ${
-                          theme === 'dark' 
-                            ? 'bg-black/20 border-white/10 text-white focus:border-[#D4AF37]' 
-                            : 'bg-gray-100 border-gray-300 text-gray-800 focus:border-[#0B2545]'
-                        }`}
-                      />
-                    </div>
-
-                    {downloadsError && <p className="text-xs text-red-500 font-bold font-mono">{downloadsError}</p>}
-
-                    <button
-                      type="submit"
-                      className="w-full bg-[#0B2545] hover:bg-[#134074] text-white text-xs font-bold py-3 rounded transition-all uppercase tracking-wider cursor-pointer"
-                    >
-                      Authenticate Access
-                    </button>
-                  </form>
-                </div>
-              ) : (
-                <div className="space-y-8">
-                  <div className="bg-green-500/10 border border-green-500/30 p-4 rounded-lg text-xs text-green-500 flex items-center justify-between">
-                    <span className="flex items-center gap-2 font-semibold">
-                      <CheckCircle2 className="w-4.5 h-4.5 text-green-500 shrink-0" />
-                      <span>Library unlocked successfully! You may stream corporate resources.</span>
-                    </span>
-                    <button 
-                      onClick={() => setIsGated(true)}
-                      className="text-[#D4AF37] hover:underline text-[10px] font-bold uppercase tracking-wider cursor-pointer"
-                    >
-                      Lock Library
-                    </button>
-                  </div>
-
+              <div className="space-y-8">
+                <p className="text-sm text-gray-500">Resources are available on request. Choose a document to prepare an email request to our office.</p>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {DOWNLOADS_CATALOG.map((item) => (
                       <div 
@@ -562,20 +445,19 @@ export default function AboutView({ theme = 'light' }: AboutViewProps) {
                         </div>
 
                         <div className="pt-6 border-t border-gray-300/10 mt-6 flex justify-between items-center text-xs">
-                          <span className="text-green-500 font-bold font-mono">Dossier Available</span>
-                          <button
-                            onClick={() => triggerDownloadFile(item)}
+                          <span className="text-green-500 font-bold font-mono">Available on request</span>
+                          <a
+                            href={`mailto:${CONTACT_INFO.email}?subject=${encodeURIComponent(`Resource request: ${item.title}`)}`}
                             className="bg-[#0B2545] hover:bg-[#D4AF37] hover:text-[#0B2545] text-[#D4AF37] p-2.5 rounded-full transition-colors flex items-center justify-center shrink-0 cursor-pointer"
-                            aria-label="Download corporate catalog file"
+                            aria-label={`Request ${item.title} by email`}
                           >
                             <Download className="w-4.5 h-4.5 shrink-0" />
-                          </button>
+                          </a>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-              )}
             </div>
           )}
 

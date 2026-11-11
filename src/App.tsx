@@ -17,7 +17,6 @@ import AboutView from './views/AboutView';
 import ServicesView from './views/ServicesView';
 import BlogView from './views/BlogView';
 import ContactView from './views/ContactView';
-import AdminView from './views/AdminView';
 
 export default function App() {
   const [activePage, setActivePage] = useState<PageId>('home');
@@ -65,8 +64,6 @@ export default function App() {
         return <BlogView theme={theme} />;
       case 'contact':
         return <ContactView theme={theme} />;
-      case 'admin':
-        return <AdminView theme={theme} />;
       default:
         return <HomeView setActivePage={setActivePage} onOpenInquiry={openInquiryPortal} theme={theme} />;
     }

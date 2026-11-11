@@ -14,8 +14,7 @@ export type PageId =
   | 'gallery'
   | 'blog'
   | 'downloads'
-  | 'contact'
-  | 'admin';
+  | 'contact';
 
 export interface ServicePillar {
   id: string;
