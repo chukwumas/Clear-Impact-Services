@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Send, CheckCircle2, Phone, Mail, MapPin } from 'lucide-react';
 import { CONTACT_INFO } from '../data';
-import { InquirySubmission } from '../types';
 
 interface InquiryFormProps {
   isOpen: boolean;
@@ -26,6 +25,10 @@ export default function InquiryForm({ isOpen, onClose, initialService = '' }: In
   const [isSuccess, setIsSuccess] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  useEffect(() => {
+    if (isOpen) setServiceCategory(initialService || 'Corporate Consulting');
+  }, [isOpen, initialService]);
+
   if (!isOpen) return null;
 
   const validateStep1 = () => {
@@ -44,7 +47,7 @@ export default function InquiryForm({ isOpen, onClose, initialService = '' }: In
     }
   };
 
-  const mailtoLink = `mailto:info@cisl.africa?subject=${encodeURIComponent(`Clear Impact Inquiry: ${serviceCategory}`)}&body=${encodeURIComponent(
+  const mailtoLink = `mailto:${CONTACT_INFO.email}?subject=${encodeURIComponent(`Clear Impact Inquiry: ${serviceCategory}`)}&body=${encodeURIComponent(
     `Hello Clear Impact Advisory Office,
 
 I would like to submit an official inquiry with details below:
@@ -71,36 +74,10 @@ ${fullName}`
 
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      // Build a submission object
-      const submission: InquirySubmission = {
-        id: 'inq_' + Math.random().toString(36).substr(2, 9),
-        timestamp: new Date().toLocaleString(),
-        fullName,
-        organization: organization || '[Individual]',
-        email,
-        phone,
-        serviceCategory,
-        message,
-        status: 'New'
-      };
+    // Prepare an email draft; delivery happens only when the visitor sends it.
+    setIsSubmitting(false);
+    setIsSuccess(true);
 
-      // Add to localStorage so it persists real-time
-      const existingStr = localStorage.getItem('clear_impact_inquiries');
-      const existing: InquirySubmission[] = existingStr ? JSON.parse(existingStr) : [];
-      existing.unshift(submission);
-      localStorage.setItem('clear_impact_inquiries', JSON.stringify(existing));
-
-      setIsSubmitting(false);
-      setIsSuccess(true);
-
-      // Attempt automatic mail redirect
-      try {
-        window.location.href = mailtoLink;
-      } catch (err) {
-        console.warn('Mail redirection prevented by browser context.', err);
-      }
-    }, 1200);
   };
 
   const resetForm = () => {
@@ -125,10 +102,10 @@ ${fullName}`
         <div className="bg-[#0B2545] text-white p-5 flex items-center justify-between">
           <div>
             <h3 className="font-sans font-bold text-lg tracking-tight text-white">
-              Launch Operational Advisory Consultation
+              Prepare a Consultation Inquiry
             </h3>
             <p className="text-xs text-[#F4F6F9]/80 h-4 uppercase">
-              {isSuccess ? 'Inquiry Logged' : `Step ${step} of 2 – Consultation Intake`}
+              {isSuccess ? 'Email Draft Ready' : `Step ${step} of 2 – Consultation Intake`}
             </p>
           </div>
           <button
@@ -151,10 +128,10 @@ ${fullName}`
                 <CheckCircle2 className="w-16 h-16 text-green-500 animate-bounce" />
               </div>
               <h4 className="font-sans font-bold text-xl text-[#0B2545] tracking-tight mb-2">
-                Inquiry Registered Successfully!
+                Your Email Draft Is Ready
               </h4>
               <p className="text-sm text-gray-600 max-w-md mx-auto mb-4 text-slate-650">
-                Thank you! Your consultation details are registered. Your inquiry details have been packaged to route straight to <strong className="text-[#116936]">info@cisl.africa</strong>.
+                Your inquiry has not been sent. Open your email app below, then send the draft to <strong className="text-[#116936]">{CONTACT_INFO.email}</strong>.
               </p>
               
               <div className="p-4 bg-[#F4F6F9] rounded-lg border border-[#E2E8F0] text-left max-w-md mx-auto mb-6">
@@ -167,7 +144,7 @@ ${fullName}`
                   <span className="col-span-2 text-gray-950 font-medium">{serviceCategory}</span>
 
                   <span className="font-semibold text-gray-600">Registry:</span>
-                  <span className="col-span-2 text-[#D4AF37] font-semibold">info@cisl.africa</span>
+                  <span className="col-span-2 text-[#D4AF37] font-semibold">{CONTACT_INFO.email}</span>
                 </div>
               </div>
 
@@ -176,14 +153,14 @@ ${fullName}`
                   href={mailtoLink}
                   className="bg-[#116936] hover:bg-[#116936]/90 text-white font-bold text-xs uppercase tracking-wider py-3.5 px-6 rounded flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
                 >
-                  Confirm & Send Email Draft
+                  Open Email Draft
                 </a>
                 <button
                   onClick={() => {
                     resetForm();
                     onClose();
                   }}
-                  className="bg-slate-850 hover:bg-slate-900 text-white font-semibold text-xs uppercase tracking-wider py-3 px-6 rounded cursor-pointer"
+                  className="bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs uppercase tracking-wider py-3 px-6 rounded cursor-pointer"
                 >
                   Close Modal
                 </button>
@@ -278,6 +255,9 @@ ${fullName}`
                         onChange={(e) => setServiceCategory(e.target.value)}
                         className="w-full text-sm border border-gray-300 p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-[#0B2545] bg-white text-gray-800"
                       >
+                        {initialService && !['Corporate Consulting', 'Educational Technology', 'International Exams', 'Cybersecurity', 'Media & Branding', 'Events & Youth Development'].includes(initialService) && (
+                          <option value={initialService}>{initialService}</option>
+                        )}
                         <option value="Corporate Consulting">Corporate Consulting & Training</option>
                         <option value="Educational Technology">Educational & Digital Learning Services (WAEC E-Study)</option>
                         <option value="International Exams">International Examination Support (IELTS / TKT)</option>
@@ -316,7 +296,7 @@ ${fullName}`
                         disabled={isSubmitting}
                         className="w-2/3 bg-[#0B2545] hover:bg-[#134074] text-white font-bold text-sm py-3 px-4 rounded transition-all flex items-center justify-center gap-2"
                       >
-                        {isSubmitting ? 'Verifying Integrity...' : 'Submit Inquiry'}
+                        {isSubmitting ? 'Preparing draft...' : 'Prepare Email Draft'}
                       </button>
                     </div>
                   </form>

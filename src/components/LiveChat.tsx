@@ -5,8 +5,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MessageSquare, Send, X, Clock, CheckCircle2, Sliders, AlertCircle } from 'lucide-react';
-import { InquirySubmission } from '../types';
+import { MessageSquare, Send, X, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+import { CONTACT_INFO } from '../data';
+import { isBusinessHours } from '../businessHours';
 
 export default function LiveChat() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +15,7 @@ export default function LiveChat() {
     {
       id: 'init',
       role: 'assistant',
-      content: 'Hello! Welcome to Clear Impact Services. I am Kemi on our support desk. How can I assist you with our professional capacity trainings, IELTS preparation, or WAEC E-Study solutions today?',
+      content: 'Hello! Welcome to Clear Impact Services. I am Kemi, an AI support assistant. How can I assist you with our professional capacity trainings, IELTS preparation, or WAEC E-Study solutions today?',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -30,7 +31,7 @@ export default function LiveChat() {
   const [offlineError, setOfflineError] = useState('');
 
   // Simulation override switch for testing/auditing purposes
-  const [forceBusinessHours, setForceBusinessHours] = useState<boolean | null>(null);
+
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -42,28 +43,16 @@ export default function LiveChat() {
   }, [messages, isTyping, isOpen]);
 
   // Check if current time falls in business hours: Mon - Fri: 08:00 AM - 05:00 PM (GMT +1/WAT)
-  const isCurrentlyInBusinessHours = () => {
-    if (forceBusinessHours !== null) return forceBusinessHours;
-
-    const d = new Date();
-    // Convert local time to UTC base, then add 1 hour (3600000 ms) for WAT (GMT+1)
-    const utcMs = d.getTime() + (d.getTimezoneOffset() * 60000);
-    const watDate = new Date(utcMs + 3600000);
-
-    const day = watDate.getDay(); // 0: Sun, 1: Mon, ..., 6: Sat
-    const hours = watDate.getHours();
-
-    const isWeekday = day >= 1 && day <= 5;
-    const isWorkingHours = hours >= 8 && hours < 17; // 8:00 AM to 4:59 PM is business hours
-
-    return isWeekday && isWorkingHours;
-  };
-
-  const businessHoursActive = isCurrentlyInBusinessHours();
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(timer);
+  }, []);
+  const businessHoursActive = isBusinessHours(now);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputVal.trim()) return;
+    if (!inputVal.trim() || isTyping) return;
 
     const userMsg = {
       id: Math.random().toString(),
@@ -78,7 +67,7 @@ export default function LiveChat() {
 
     try {
       // Prepare full chat thread context to pass to Gemini API
-      const conversationHistory = [...messages, userMsg].map((msg) => ({
+      const conversationHistory = [...messages, userMsg].filter(msg => msg.id !== 'init').slice(-29).map((msg) => ({
         role: msg.role,
         content: msg.content
       }));
@@ -136,29 +125,8 @@ export default function LiveChat() {
 
     setOfflineError('');
     
-    // Save to the browser client CRM ledger (localStorage)
-    const submission: InquirySubmission = {
-      id: 'chat_off_' + Math.random().toString(36).substr(2, 9),
-      timestamp: new Date().toLocaleString(),
-      fullName: offlineName,
-      organization: '[Live Chat Offline Desk]',
-      email: offlineEmail,
-      phone: offlinePhone,
-      serviceCategory: 'Corporate Consulting',
-      message: offlineMsg,
-      status: 'New'
-    };
-
-    const existingStr = localStorage.getItem('clear_impact_inquiries');
-    const existing = existingStr ? JSON.parse(existingStr) : [];
-    existing.unshift(submission);
-    localStorage.setItem('clear_impact_inquiries', JSON.stringify(existing));
-
     setOfflineSuccess(true);
-    setOfflineName('');
-    setOfflineEmail('');
-    setOfflinePhone('');
-    setOfflineMsg('');
+
   };
 
   return (
@@ -222,25 +190,16 @@ export default function LiveChat() {
                 </div>
                 <div>
                   <h4 className="font-sans font-extrabold text-xs tracking-tight text-white flex items-center gap-1.5">
-                    Kemi <span className="font-mono text-[8px] uppercase font-bold bg-[#134074]/90 text-[#D4AF37] px-1 py-0.2 rounded border border-[#D4AF37]/15">Support Desk</span>
+                    Kemi <span className="font-mono text-[8px] uppercase font-bold bg-[#134074]/90 text-[#D4AF37] px-1 py-0.2 rounded border border-[#D4AF37]/15">AI Assistant</span>
                   </h4>
                   <p className="text-[10px] text-gray-300 font-mono flex items-center gap-1 leading-none pt-1">
                     <span className={`w-1.5 h-1.5 rounded-full ${businessHoursActive ? 'bg-green-500 animate-pulse' : 'bg-amber-500'}`} />
-                    {businessHoursActive ? 'Online • In Office Desk' : 'Away • Operations Closed'}
+                    {businessHoursActive ? 'AI chat • Office hours' : 'Away • Operations Closed'}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-1">
-                {/* Debug simulation toggle button is displayed discrete for grading review */}
-                <button
-                  type="button"
-                  onClick={() => setForceBusinessHours(forceBusinessHours === null ? !businessHoursActive : forceBusinessHours === true ? false : forceBusinessHours === false ? true : null)}
-                  title="Auditor Control Desk: Toggle business hours status manually to review both layout forms"
-                  className="p-1 hover:bg-[#134074] rounded text-[#D4AF37] transition-all hover:text-white"
-                >
-                  <Sliders className="w-3.5 h-3.5 text-[#D4AF37]" />
-                </button>
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
@@ -251,21 +210,6 @@ export default function LiveChat() {
                 </button>
               </div>
             </div>
-
-            {/* Simulated hours debugger indicator label */}
-            {forceBusinessHours !== null && (
-              <div className="bg-yellow-50 text-[9px] text-yellow-800 p-1.5 font-mono text-center border-b border-yellow-100 flex items-center justify-center gap-1 shrink-0">
-                <AlertCircle className="w-3.5 h-3.5 text-yellow-600 shrink-0" />
-                <span>Simulated: {forceBusinessHours ? 'WORKING HOURS ACTIVE' : 'BUSINESS HOURS OFFLINE'}</span>
-                <button 
-                  type="button"
-                  onClick={() => setForceBusinessHours(null)}
-                  className="underline ml-1 font-bold font-sans tracking-wide hover:text-black uppercase"
-                >
-                  Clear Hook
-                </button>
-              </div>
-            )}
 
             {/* Content view toggle based on standard checking */}
             {businessHoursActive ? (
@@ -318,6 +262,7 @@ export default function LiveChat() {
                   <input
                     type="text"
                     value={inputVal}
+                    maxLength={2000}
                     onChange={(e) => setInputVal(e.target.value)}
                     placeholder="Ask Kemi about capacity training, IELTS, WAEC..."
                     required
@@ -339,11 +284,12 @@ export default function LiveChat() {
                   <div className="text-center py-8 space-y-4 my-auto">
                     <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto animate-bounce" />
                     <h4 className="font-sans font-extrabold text-[#0B2545] tracking-tight text-sm uppercase">
-                      MESSAGE LOGGED SECURELY!
+                      EMAIL DRAFT READY
                     </h4>
                     <p className="text-[11px] text-gray-500 leading-relaxed max-w-xs mx-auto">
-                      Thank you! Clear Impact operates Monday - Friday, 08:00 AM - 05:00 PM (GMT +1). Kemi and our support desks will contact you via email at 8:00 AM WAT sharp!
+                      Your message has not been sent. Open your email app below and send the draft. Office hours: Monday to Friday, 08:00–17:00 WAT.
                     </p>
+                    <a className="block underline text-sm text-blue-800" href={`mailto:${CONTACT_INFO.email}?subject=Offline%20inquiry&body=${encodeURIComponent([offlineName, offlineEmail, offlinePhone, offlineMsg].join('\n'))}`}>Open Email Draft</a>
                     <button
                       type="button"
                       onClick={() => setOfflineSuccess(false)}
@@ -432,7 +378,7 @@ export default function LiveChat() {
                         type="submit"
                         className="w-full bg-[#0B2545] hover:bg-[#134074] text-white text-[10px] font-bold py-2.5 rounded tracking-wider uppercase transition-colors"
                       >
-                        File Offline Inquiry
+                        Prepare Email Draft
                       </button>
                     </div>
                   </form>

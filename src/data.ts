@@ -17,7 +17,7 @@ export const CONTACT_INFO = {
   companyName: "Clear Impact Services Limited",
   address: "Plot 114 Rumuosi / Rumuagholu Road, Off Airport Road, Rumuosi, Port Harcourt, Rivers State, Nigeria",
   phones: ["08037762620", "09020147466"],
-  email: "clearimpactservicers@gmail.com",
+  email: "info@cisl.africa",
   taglines: [
     "Professional Solutions With Lasting Impact",
     "Transforming Organizations Through Training, Technology & Innovation"

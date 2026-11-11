@@ -6,7 +6,6 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Watch, MessageSquare, ShieldAlert, CheckCircle2, Send, User, Building, HelpCircle } from 'lucide-react';
 import { CONTACT_INFO } from '../data';
-import { InquirySubmission } from '../types';
 
 interface ContactViewProps {
   theme?: 'light' | 'dark';
@@ -29,7 +28,7 @@ export default function ContactView({ theme = 'light' }: ContactViewProps) {
   const subBgClass = isDark ? 'bg-[#21293B]' : 'bg-[#F4F6F9]';
   const textPrimaryClass = isDark ? 'text-white' : 'text-[#0B2545]';
 
-  const mailtoLink = `mailto:info@cisl.africa?subject=${encodeURIComponent(`Clear Impact Inquiry: ${serviceCategory}`)}&body=${encodeURIComponent(
+  const mailtoLink = `mailto:${CONTACT_INFO.email}?subject=${encodeURIComponent(`Clear Impact Inquiry: ${serviceCategory}`)}&body=${encodeURIComponent(
     `Hello Clear Impact Advisory Office,
 
 I would like to submit an official inquiry with details below:
@@ -57,35 +56,10 @@ ${fullName}`
     setIsSubmitting(true);
     setError('');
 
-    setTimeout(() => {
-      const submission: InquirySubmission = {
-        id: 'con_' + Math.random().toString(36).substr(2, 9),
-        timestamp: new Date().toLocaleString(),
-        fullName,
-        organization: organization || '[Individual]',
-        email,
-        phone,
-        serviceCategory,
-        message,
-        status: 'New'
-      };
+    // Prepare an email draft; delivery happens only when the visitor sends it.
+    setIsSubmitting(false);
+    setIsSuccess(true);
 
-      const existingStr = localStorage.getItem('clear_impact_inquiries');
-      const existing = existingStr ? JSON.parse(existingStr) : [];
-      existing.unshift(submission);
-      localStorage.setItem('clear_impact_inquiries', JSON.stringify(existing));
-
-      setIsSubmitting(false);
-      setIsSuccess(true);
-      setError('');
-
-      // Attempt automatic redirect to mail client
-      try {
-        window.location.href = mailtoLink;
-      } catch (err) {
-        console.warn('Mail client automatic launch prevented by browser context.', err);
-      }
-    }, 1200);
   };
 
   const resetForm = () => {
@@ -111,7 +85,7 @@ ${fullName}`
             Connect With Our Advisory Office
           </h1>
           <p className="text-sm text-gray-400 mt-2 max-w-2xl leading-relaxed">
-            Reach out via phone, direct WhatsApp, secure inbox, or visit our permanent registered headquarters in Port Harcourt, Rivers State. All forms route automatically to our central registry.
+            Reach out via phone, direct WhatsApp, secure inbox, or visit our permanent registered headquarters in Port Harcourt, Rivers State. Forms prepare an email draft for you to send to our office.
           </p>
         </div>
 
@@ -148,7 +122,7 @@ ${fullName}`
                   <Mail className="w-5 h-5 text-[#D4AF37] shrink-0" />
                   <div>
                     <p className={`font-bold ${textPrimaryClass}`}>Official Inbox Portal:</p>
-                    <p className="truncate">info@cisl.africa</p>
+                    <p className="truncate">{CONTACT_INFO.email}</p>
                   </div>
                 </div>
 
@@ -191,25 +165,25 @@ ${fullName}`
             {isSuccess ? (
               <div className="text-center py-12 space-y-4">
                 <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto animate-bounce" />
-                <h3 className={`font-sans font-bold text-xl tracking-tight ${textPrimaryClass}`}>Inquiry Logged</h3>
+                <h3 className={`font-sans font-bold text-xl tracking-tight ${textPrimaryClass}`}>Email Draft Ready</h3>
                 <p className="text-xs text-shared-gray max-w-md mx-auto text-gray-400">
-                  Thank you! Your consultation details are registered in our local system. The form has been packaged to routes directly to <strong className="text-[#D4AF37]">info@cisl.africa</strong>.
+                  Your inquiry has not been sent. Open your email app below and send the draft to <strong className="text-[#D4AF37]">{CONTACT_INFO.email}</strong>.
                 </p>
                 <p className="text-[11px] text-[#D4AF37] max-w-xs mx-auto italic">
-                  Note: If your local email client did not open the draft automatically, utilize the dispatch button below:
+                  Use the button below to open the draft. You can also email or call the office directly.
                 </p>
                 <div className="pt-4 flex flex-col sm:flex-row justify-center gap-3">
                   <a
                     href={mailtoLink}
                     className="bg-[#116936] hover:bg-[#116936]/90 text-white text-xs font-bold py-3 px-6 rounded uppercase tracking-wider block text-center border border-transparent transition-all"
                   >
-                    Dispatch copy to info@cisl.africa
+                    Open Email Draft
                   </a>
                   <button 
                     onClick={resetForm}
                     className={`text-xs font-bold py-3 px-6 rounded uppercase tracking-wider border ${isDark ? 'border-slate-800 text-white bg-slate-800/40 hover:bg-slate-850' : 'border-gray-250 text-gray-700 bg-gray-50 hover:bg-gray-100'}`}
                   >
-                    Submit New Message
+                    Prepare Another Inquiry
                   </button>
                 </div>
               </div>
@@ -366,7 +340,7 @@ ${fullName}`
                   disabled={isSubmitting}
                   className="w-full bg-[#116936] hover:bg-[#116936]/90 text-white font-bold text-xs tracking-wider uppercase py-4 rounded shadow hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
                 >
-                  {isSubmitting ? 'Posting secure data...' : 'Submit Advisory Consultation'} <Send className="w-3.5 h-3.5" />
+                  {isSubmitting ? 'Preparing draft...' : 'Prepare Email Draft'} <Send className="w-3.5 h-3.5" />
                 </button>
               </form>
             )}

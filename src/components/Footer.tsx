@@ -179,13 +179,6 @@ export default function Footer({ setActivePage, onOpenInquiry }: FooterProps) {
         <div className="border-t border-[#134074]/60 pt-8 flex flex-col sm:flex-row items-center justify-between text-[11px] text-gray-400 gap-4">
           <p>© {currentYear} {CONTACT_INFO.companyName}. All Rights Reserved.</p>
           <div className="flex gap-4 items-center">
-            <button
-              onClick={() => { setActivePage('admin'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-              className="hover:text-[#D4AF37] font-semibold flex items-center gap-1 transition-colors"
-            >
-              🔐 Client Inquiry Ledger
-            </button>
-            <span className="text-[#134074]">•</span>
             <span className="text-gray-500">Corporate Registration Verification Active</span>
           </div>
         </div>
